@@ -1,16 +1,12 @@
 // ============================================================================
-//  DECRYPTED  —  GameManager
+//  DECRYPTED  —  GameManager   [PATCHED: UnityEvents pre-initialized]
 // ----------------------------------------------------------------------------
 //  Single source of truth for "where the visitor is" in the museum. Every
 //  exhibit reports completion here; this class advances the experience, moves
 //  the Guide Orb to the next interactable, swaps the music zone, and keeps the
 //  whole thing inside the 2-3 minute window required by the rubric.
-//
-//  Flow:  Splash -> Tutorial -> Exhibit1 (Caesar) -> Exhibit2 (Rotor) ->
-//         Vault -> Reveal/Outro
 // ============================================================================
 
-using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -45,12 +41,14 @@ public class GameManager : MonoBehaviour
     public Transform vaultFocus;
     public Transform revealFocus;
 
+    // Events are pre-initialized so tools (like the greybox builder) can safely
+    // attach listeners even before the scene is saved.
     [Header("Events (hook lights, panels, etc. in the Inspector)")]
-    public UnityEvent onTutorialBegin;
-    public UnityEvent onExhibit1Begin;
-    public UnityEvent onExhibit2Begin;
-    public UnityEvent onVaultBegin;
-    public UnityEvent onRevealBegin;
+    public UnityEvent onTutorialBegin = new UnityEvent();
+    public UnityEvent onExhibit1Begin = new UnityEvent();
+    public UnityEvent onExhibit2Begin = new UnityEvent();
+    public UnityEvent onVaultBegin = new UnityEvent();
+    public UnityEvent onRevealBegin = new UnityEvent();
 
     [Header("Pacing")]
     [Tooltip("Soft target so the team can rehearse to the 2-3 min window. " +

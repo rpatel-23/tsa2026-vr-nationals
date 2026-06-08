@@ -1,15 +1,13 @@
 // ============================================================================
-//  DECRYPTED  —  TutorialController
+//  DECRYPTED  —  TutorialController   [PATCHED: null-safe panels]
 // ----------------------------------------------------------------------------
-//  The "what do I do?" moment. Two quick visual panels (NEXT to advance, like
-//  the reference team's tutorial) that teach the only two interactions the
-//  whole museum uses:
+//  The "what do I do?" moment. Two quick visual panels (NEXT to advance) that
+//  teach the only two interactions the whole museum uses:
 //     1. POINT + TRIGGER to press buttons
 //     2. GRAB + TWIST to turn wheels and dials
-//  Each panel is an image/icon + a one-line text label. No narration.
 //
-//  When the visitor finishes the last panel, the tutorial stage completes and
-//  the Guide Orb leads them to Exhibit 1.
+//  Now guards against an empty 'panels' array so it can never throw while a
+//  scene is being built.
 // ============================================================================
 
 using UnityEngine;
@@ -41,6 +39,12 @@ public class TutorialController : MonoBehaviour
     // Hook to GameManager.onTutorialBegin in the Inspector.
     public void Begin()
     {
+        if (panels == null || panels.Length == 0)
+        {
+            // Nothing to show -> just move straight on.
+            GameManager.Instance.CompleteStage(GameManager.Stage.Tutorial);
+            return;
+        }
         _active = true;
         _index = 0;
         Show(_index);
@@ -70,12 +74,14 @@ public class TutorialController : MonoBehaviour
 
     void Show(int i)
     {
+        if (panels == null) return;
         for (int p = 0; p < panels.Length; p++)
             if (panels[p] != null) panels[p].SetActive(p == i);
     }
 
     void HideAll()
     {
+        if (panels == null) return;
         foreach (var p in panels) if (p != null) p.SetActive(false);
     }
 }
